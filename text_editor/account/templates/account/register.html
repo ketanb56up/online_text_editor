@@ -1,0 +1,86 @@
+{% load account_tags %}
+
+<!--  Register Form -->
+<form action="{% url 'register_user' %}" enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    <h1>Register</h1>
+    <p>Please fill in this form to create an account.</p>
+
+    <!-- Fetch Error -->
+    {% if form.errors %}
+    <h4>Please fix the following errors</h4>
+    <ul>
+        {% for field in form %}
+        {% if field.errors %}
+        {% for error in field.errors %}
+        <li><a class="error" href="#id_{{ field.name }}">{{ error|escape }}</a></li>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% if form.non_field_errors %}
+    {{ form.non_field_errors }}
+    {% endif %}
+    {%endif%}
+    <!--  End Fetch Error -->
+
+    <table>
+        <tr>
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.first_name.label_tag }}</td>
+            <td>{{ form.first_name }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.last_name.label_tag }}</td>
+            <td>{{ form.last_name }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.email.label_tag }}</td>
+            <td>{{ form.email }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.contact.label_tag }}</td>
+            <td>{{ form.contact }}</td>
+        </tr>
+        <tr>
+            <input hidden id="id_user_agent" name="user_agent" type="text" value="">
+        </tr>
+        <tr>
+            <td>{{ form.password1.label_tag }}</td>
+            <td>{{ form.password1 }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.password2.label_tag }}</td>
+            <td>{{ form.password2 }}</td>
+        </tr>
+    </table>
+
+    <input type="submit" value="login"/>
+    <input name="next" type="hidden" value="{{ next }}"/>
+</form>
+<!--  Form block end  -->
+
+<!--  Start FingerPrint JS  -->
+<script>
+function initFingerprintJS() {
+  FingerprintJS.load({
+        <!-- finger_print_token is custom template tag which is giving the FingerprintJS token-->
+        token: "{% finger_print_token %}",
+  })
+    .then((fp) => fp.get())
+    .then((result) => {
+        console.log(result.visitorId)
+      document.getElementById("id_user_agent").value =
+        result.visitorId;
+    });
+}
+
+
+</script>
+<script async onload="initFingerprintJS()"
+        src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs-pro@3/dist/fp.min.js"></script>
+
+<!-- END FingerPrint JS  -->
