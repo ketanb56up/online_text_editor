@@ -35,7 +35,9 @@ class UsersByUsername(View):
     """
 
     def get(self, request, username):
+        # here we fetch requested user's information
         user = User.objects.filter(username=username)
+        # here we fetch the list of accounts opened by the same person(user).
         user_list = (
             User.objects.filter(user_agent=user.first().user_agent) if user else None
         )
